@@ -1,0 +1,47 @@
+matrix=[]
+n,k=map(int,input('Введите количество вершин и ограничение на использование доп. путей:').split())
+print('Введите матрицу размерности графа:')
+matrix.append([0 for i in range(n+1)])
+for i in range(n):
+    buff=[0]+list(map(int,input().split()))
+    matrix.append(buff)
+extra_edge=[]
+print('Введите данные доп.ребер:')
+while True:
+    z=input()
+    if (z!=''):
+        x,y=map(int,z.split())
+        extra_edge.append([x,y])
+    else:
+        break
+st,end=map(int,input('Введите вершины, между которыми нужно найти кратчайший путь:').split())
+min_path_len=10**20
+min_path=[]
+def fast_path(curr,end,matrix,extra_edge,count_extra,path,curr_score):
+    global min_path
+    global min_path_len
+    path.append(curr)
+    if curr==end:
+        if (curr_score<min_path_len):
+            min_path_len=curr_score
+            min_path=path.copy()
+        return
+    elif curr in path[:len(path)-1]:
+        return
+    else:
+        for i in range(1,n+1):
+            if i not in path[:len(path)-1]:
+                if matrix[i][curr]!=0:
+                    if (sorted([i,curr]) in extra_edge):
+                        if (count_extra<k):
+                            count_extra+=1
+                            fast_path(i,end,matrix,extra_edge,count_extra,path,curr_score+matrix[i][curr])
+                            path.pop(-1)
+                            count_extra-=1
+                    else:
+                        fast_path(i,end,matrix,extra_edge,count_extra,path,curr_score+matrix[i][curr])
+                        path.pop(-1)
+fast_path(st,end,matrix,extra_edge,count_extra=0,path=[],curr_score=0)
+print()
+print(f'Минимальный путь между {st} и {end}: {min_path_len}')
+print(f'Маршрут: {min_path}')
