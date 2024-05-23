@@ -1,0 +1,22 @@
+def find_top_frequency_words(file_path):
+    word_freq = {} 
+    ok='йцукенгшщззхъфывапролджэячсмитьбю'
+    with open(file_path, 'r') as file:
+        for line in file:
+            words = line.split()
+            for word in words:
+                if not(len(word)==1 and not (word in ok)):
+                    if word in word_freq:
+                        word_freq[word] += 1
+                    else:
+                        word_freq[word] = 1
+    sorted_word_freq = sorted(word_freq.items(), key=lambda x: x[1], reverse=True) 
+    top_words = []
+    for word, freq in sorted_word_freq:
+        top_words.append(word)
+        if len(top_words) == 5:  
+            break
+    return top_words
+file_path = '123.txt' 
+top_frequency_words = find_top_frequency_words(file_path)
+print("5 самых часто встречающихся слов в файле:", top_frequency_words)
