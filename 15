@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cmath>
+using namespace std;
+bool comp(pair<int,int> a, pair<int,int> b){
+    return a.first < b.first;
+}
+vector< pair<int,int> > read_dots() {
+    vector<pair <int,int >> data;
+    cout << "Enter x and y of dots,to stop-enter '-' :" << endl;
+    string x, y;
+    while (true) {
+        cin >> x;
+        if (x == "-") {
+            break;
+        }
+        else {
+            cin >> y;
+            data.push_back(make_pair(stoi(x), stoi(y)));
+        }
+    }
+    return data;
+}
+double my_distance(pair<int,int> a,pair<int,int> b) {
+    return (sqrt((a.first - b.first)* (a.first - b.first) + (a.second - b.second)* (a.second - b.second)));
+}
+int main()
+{
+    vector< pair<int, int>> data = read_dots();
+    sort(data.begin(), data.end(), comp);
+    vector<int> vector_x;
+    double d = 100000;
+    vector<pair<int, int>> usable_dots = {data.at(0)};
+    pair<int, int> ans_a, ans_b;
+    data.erase(data.begin());
+    for (auto a:data) {
+        if (a.first - d > usable_dots.at(0).first) {
+            for (int i = 0; i < size(usable_dots); i++) {
+                if (a.first - d > usable_dots.at(i).first) {
+                    usable_dots.erase(usable_dots.begin());
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < size(usable_dots); i++) {
+            if (my_distance(usable_dots.at(i), a) < d) {
+                d = my_distance(usable_dots.at(i), a);
+                ans_a = usable_dots.at(i);
+                ans_b = a;
+            }
+        }
+        usable_dots.push_back(a);
+    }
+    cout << "Two closest dots - " << ans_a.first << " " << ans_a.second << " and " << ans_b.first << " " << ans_b.second << endl << "Distance between them is " << d << endl;;
+    return 0;
+}
